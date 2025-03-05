@@ -5,7 +5,7 @@ import React from 'react'
 export default function Page1() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Market Identification</Text>
+      <Text style={styles.title}>Market Identisfdffication</Text>
     </View>
   )
 }
