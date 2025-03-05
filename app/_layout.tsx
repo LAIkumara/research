@@ -1,6 +1,7 @@
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { View, ActivityIndicator } from "react-native";
+import ImageUpload from './image_upload/ImageUpload';
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -10,9 +11,8 @@ export default function Layout() {
 
   if (!fontsLoaded) {
     return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+      
+      <ImageUpload />
     );
   }
 
