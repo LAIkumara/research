@@ -5,7 +5,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { Button } from 'react-native';
 
 
-export default function Page2() {
+export default function Page1() {
   const [image, setImage] = useState<string | null>(null);
 
   const pickImage = async () => {
