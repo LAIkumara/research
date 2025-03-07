@@ -1,9 +1,9 @@
-import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Image, Button } from 'react-native';
 import { styles } from "../../styles/auth.styles";
 import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { Button } from 'react-native';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
+import { Platform } from 'react-native';  // Import Platform to check for web
 
 export default function Page1() {
   const [image, setImage] = useState<string | null>(null);
@@ -21,6 +21,8 @@ export default function Page1() {
     if (!result.canceled && result.assets && result.assets.length > 0) {
       setImage(result.assets[0].uri);
       uploadImage(result.assets[0].uri);  // Automatically upload the image after selection
+    } else {
+      console.error('No image selected');
     }
   };
 
@@ -39,40 +41,44 @@ export default function Page1() {
   // Function to upload the selected or captured image to the backend
   const uploadImage = async (uri: string) => {
     const formData = new FormData();
-
-    // Define the file object
-    const file: any = {
-      uri: uri,
-      name: 'image.jpg', // You can change this based on the image
-      type: 'image/jpeg', // Adjust MIME type based on the image format
-    };
-
-    // Check the file object before appending
-    console.log("File object being uploaded:", file);
-
-    // Append the image file to FormData with the key 'image' (to match backend)
-    formData.append('image', file); // Ensure 'image' is consistent with the backend field name
-    console.log("FormData contents:", formData);  // Add this to inspect the FormData contents
-
+  
+    if (Platform.OS === 'web') {
+      // For web: Get the base64 string from the URI
+      const base64String = uri.split(',')[1]; // Extract base64 from the URI
+  
+      // Append base64 string for web upload
+      formData.append('image', base64String); 
+    } else {
+      // For mobile: Append file normally
+      const file: any = {
+        uri: uri,
+        name: 'image.jpg', 
+        type: 'image/jpeg', 
+      };
+      formData.append('image', file);
+    }
+  
     try {
-      // Use your local IP address for the backend
-      const response = await axios.post('http://localhost:5000/upload', formData, {
+      const response = await axios.post('http://192.168.106.18:5000/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Axios will handle this automatically, but it's okay to keep it
         },
       });
-
+  
       setUploadMessage('Image uploaded successfully!');
-      console.log('Server response:', response.data);  // Log server response
+      console.log('Server response:', response.data);
     } catch (error) {
       console.error('Error uploading image:', error);
       setUploadMessage('Error uploading image');
     }
   };
+  
 
   return (
     <View style={[styles.container, { padding: 20, justifyContent: 'center', alignItems: 'center' }]}>
-      <Text style={[styles.title, { fontSize: 24, marginBottom: 30, textAlign: 'center', color: '#333' }]}>Damage Detection</Text>
+      <Text style={[styles.title, { fontSize: 24, marginBottom: 30, textAlign: 'center', color: '#333' }]}>
+        Damage Detection
+      </Text>
 
       {/* Button to pick image from gallery */}
       <TouchableOpacity style={{ marginBottom: 20, width: '80%' }}>

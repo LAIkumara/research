@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
 import { View, ActivityIndicator } from "react-native";
-import ImageUpload from './image_upload/ImageUpload';
+import Home from './index';
 
 export default function Layout() {
   const [fontsLoaded] = useFonts({
@@ -12,7 +12,7 @@ export default function Layout() {
   if (!fontsLoaded) {
     return (
       
-      <ImageUpload />
+      <Home />
     );
   }
 
