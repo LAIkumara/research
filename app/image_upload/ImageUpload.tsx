@@ -1,14 +1,15 @@
+import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { styles } from "../../styles/auth.styles";
 import React, { useState } from 'react';
-import { View, Image, Button, StyleSheet } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import axios from 'axios';
-import { ActivityIndicator } from 'react-native';
+import { Button } from 'react-native';
+import axios from 'axios'; // Import axios
 
+export default function Page1() {
+  const [image, setImage] = useState<string | null>(null);
+  const [uploadMessage, setUploadMessage] = useState<string | null>(null);
 
-const ImageUpload = () => {
-  const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
-
+  // Function to pick an image from the gallery
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -17,63 +18,79 @@ const ImageUpload = () => {
       quality: 1,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets && result.assets.length > 0) {
       setImage(result.assets[0].uri);
+      uploadImage(result.assets[0].uri);  // Automatically upload the image after selection
     }
   };
 
-  const uploadImage = async () => {
-    if (!image) return alert('Please select an image first');
-
-    setLoading(true);
-    let formData = new FormData();
-    formData.append('file', {
-      uri: image,
-      name: 'image.jpg',
-      type: 'image/jpeg',
+  // Function to capture an image using the camera
+  const captureImage = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      quality: 1,
     });
 
-    try {
-      const response = await axios.post('http://YOUR_BACKEND_URL/api/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
-      alert('Upload Successful!');
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-      alert('Upload Failed');
+    if (!result.canceled && result.assets && result.assets.length > 0) {
+      setImage(result.assets[0].uri);
+      uploadImage(result.assets[0].uri);  // Automatically upload the image after capture
     }
+  };
 
-    setLoading(false);
+  // Function to upload the selected or captured image to the backend
+  const uploadImage = async (uri: string) => {
+    const formData = new FormData();
+  
+    // Define the file object
+    const file: any = {
+      uri: uri,
+      name: 'image.jpg', // You can change this based on the image
+      type: 'jpg/jpeg', // Adjust MIME type based on the image format
+    };
+  
+    // Check the file object before appending
+    console.log("File object being uploaded:", file);
+  
+    // Append the image file to FormData with the key 'image' (to match backend)
+    formData.append('image', file); // Ensure 'image' is consistent with the backend field name
+    console.log("FormData contents:", formData);  // Add this to inspect the FormData contents
+  
+    try {
+      // Use your local IP address for the backend
+      const response = await axios.post('http://192.168.106.18:5000/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Axios will handle this automatically, but it's okay to keep it
+        },
+      });
+  
+      setUploadMessage('Image uploaded successfully!');
+      console.log('Server response:', response.data);  // Log server response
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setUploadMessage('Error uploading image');
+    }
   };
 
   return (
-    <View style={styles.container}>
-      {image && <Image source={{ uri: image }} style={styles.image} />}
-      <Button title="Pick Image" onPress={pickImage} />
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <Button title="Upload Image" onPress={uploadImage} disabled={!image} />
+    <View style={[styles.container, { padding: 20, justifyContent: 'center', alignItems: 'center' }]}>
+      <Text style={[styles.title, { fontSize: 24, marginBottom: 30, textAlign: 'center', color: '#333' }]}>Damage Detection</Text>
+
+      {/* Button to pick image from gallery */}
+      <TouchableOpacity style={{ marginBottom: 20, width: '80%' }}>
+        <Button title="Upload Image" onPress={() => image && uploadImage(image)} color="#2196F3" />
+      </TouchableOpacity>
+
+      {/* Button to capture image using the camera */}
+      <TouchableOpacity style={{ width: '80%' }}>
+        <Button title="Capture Image" onPress={captureImage} color="#4CAF50" />
+      </TouchableOpacity>
+
+      {/* Display selected or captured image */}
+      {image && (
+        <Image source={{ uri: image }} style={{ width: 250, height: 250, marginTop: 30, borderRadius: 20, borderWidth: 2, borderColor: '#ccc' }} />
       )}
+
+      {/* Display the upload message */}
+      {uploadMessage && <Text>{uploadMessage}</Text>}
     </View>
   );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  image: {
-    width: 200,
-    height: 200,
-    marginBottom: 20,
-    borderRadius: 10,
-  },
-});
-
-export default ImageUpload;
+}
