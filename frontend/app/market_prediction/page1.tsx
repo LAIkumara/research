@@ -59,7 +59,7 @@ export default function Page1() {
     }
   
     try {
-      const response = await axios.post('http://192.168.106.18:5000/tire_quality/upload', formData, {
+      const response = await axios.post('http://192.168.106.18:5000/market_prediction/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Axios will handle this automatically, but it's okay to keep it
         },
@@ -77,7 +77,7 @@ export default function Page1() {
   return (
     <View style={[styles.container, { padding: 20, justifyContent: 'center', alignItems: 'center' }]}>
       <Text style={[styles.title, { fontSize: 24, marginBottom: 30, textAlign: 'center', color: '#333' }]}>
-        Tire Quality Assessment
+        Damage Detection
       </Text>
 
       {/* Button to pick image from gallery */}
