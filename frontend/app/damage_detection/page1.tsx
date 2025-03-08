@@ -59,7 +59,7 @@ export default function Page1() {
     }
   
     try {
-      const response = await axios.post('http://192.168.106.18:5000/upload', formData, {
+      const response = await axios.post('http://192.168.106.18:5000/damage_detection/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Axios will handle this automatically, but it's okay to keep it
         },
