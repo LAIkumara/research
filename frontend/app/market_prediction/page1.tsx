@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { Platform } from 'react-native';  // Import Platform to check for web
+import Layout from '../layout';
 
 export default function Page1() {
   const [image, setImage] = useState<string | null>(null);
@@ -75,6 +76,7 @@ export default function Page1() {
   
 
   return (
+    <Layout>
     <View style={[styles.container, { padding: 20, justifyContent: 'center', alignItems: 'center' }]}>
       <Text style={[styles.title, { fontSize: 24, marginBottom: 30, textAlign: 'center', color: '#333' }]}>
         Damage Detection
@@ -98,5 +100,5 @@ export default function Page1() {
       {/* Display the upload message */}
       {uploadMessage && <Text>{uploadMessage}</Text>}
     </View>
-  );
+    </Layout>);
 }
