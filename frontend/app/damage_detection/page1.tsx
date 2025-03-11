@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { Platform } from 'react-native';  // Import Platform to check for web
+import { router } from 'expo-router';
 import Layout from '../layout';
 
 export default function Page1() {
@@ -68,6 +69,16 @@ export default function Page1() {
   
       setUploadMessage('This damage is a '+ response.data.damage_type +' and it is ' + response.data.repairability);
       console.log('Server response:', response.data);
+
+      
+    // Navigate based on the repairability value
+      if (response.data.repairability === 'Repairable') {
+        router.push('/damage_detection/repairable');  // Navigate to repairable page
+      } else if (response.data.repairability === 'Unrepairable') {
+        router.push('/damage_detection/unrepairable');  // Navigate to unrepairable page
+      }
+
+    
     } catch (error) {
       console.error('Error uploading image:', error);
       setUploadMessage('Error uploading image');

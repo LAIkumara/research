@@ -19,7 +19,7 @@ const Footer: React.FC = () => {
     { name: "Tishan", icon: "chatbubbles", path: "/feedback/page1" },
     { name: "Tanishka", icon: "speedometer", path: "/tire_quality_assesment/page1" },
     { name: "Akila", icon: "construct", path: "/damage_detection/page1" },
-    { name: "Yasith", icon: "search", path: "/market_identification/page1" },
+    { name: "Yasith", icon: "search", path: "/market_prediction/page1" },
   ];
 
   return (
