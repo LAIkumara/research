@@ -1,4 +1,3 @@
 from .tire_quality_controller import tire_quality
 from .damage_detection_controller import damage_detection
-from .market_prediction_controller import market_prediction
-
+from .vehicle_classification_controller import vehicle_classification

@@ -1,10 +1,14 @@
 import { View, Text, Button, StyleSheet } from 'react-native';
 import React, { useState } from 'react';
+import { useLocalSearchParams } from 'expo-router';
 import Layout from '../layout';
 import { Picker } from '@react-native-picker/picker';
 
 export default function Repairable() {
   const [location, setLocation] = useState<string | null>(null);
+  
+  const params = useLocalSearchParams();
+  const { damageType } = params;
 
   return (
     <Layout>
@@ -13,8 +17,8 @@ export default function Repairable() {
         <Text style={styles.message}>
           
           
-            <Text style={styles.message}>This damage is repairable! We can help you find the best shops near you.</Text>
-
+            <Text style={styles.message}>Your {damageType} damage is repairable! We can help you find the best shops near you.</Text>
+            
           Start by selecting your nearest location from the dropdown, and we'll guide you to trusted repair shops!
         </Text>
         

@@ -72,11 +72,19 @@ export default function Page1() {
 
       
     // Navigate based on the repairability value
+      // Inside your uploadImage function
       if (response.data.repairability === 'Repairable') {
-        router.push('/damage_detection/repairable');  // Navigate to repairable page
+        router.push({
+          pathname: '/damage_detection/repairable',
+          params: { damageType: response.data.damage_type }
+        });
       } else if (response.data.repairability === 'Unrepairable') {
-        router.push('/damage_detection/unrepairable');  // Navigate to unrepairable page
+        router.push({
+          pathname: '/damage_detection/unrepairable',
+          params: { damageType: response.data.damage_type }
+        });
       }
+
 
     
     } catch (error) {

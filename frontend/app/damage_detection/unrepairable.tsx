@@ -1,16 +1,18 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
+import { useLocalSearchParams } from 'expo-router';
 import Layout from '../layout'
 
-// You can use an "unhappy" emoji or an image as the sticker
-// For this example, we'll use an emoji but you can replace it with an image if you have one.
 
 export default function Unrepairable() {
+  const params = useLocalSearchParams();
+  const { damageType } = params;
+
   return (
     <Layout>
       <View style={styles.container}>
         {/* Display "Sorry! this damage is Unrepairable." message */}
-        <Text style={styles.message}>Sorry! this damage is Unrepairable.</Text>
+        <Text style={styles.message}>Sorry! your {damageType} damage is Unrepairable.</Text>
 
         {/* Display "Unhappy" sticker (using an emoji for now) */}
         <Text style={styles.emoji}>😞</Text>
@@ -49,4 +51,5 @@ const styles = StyleSheet.create({
     height: 100,
     marginTop: 20,
   }
+  
 })
