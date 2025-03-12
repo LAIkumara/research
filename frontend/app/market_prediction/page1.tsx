@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { Platform } from 'react-native';  // Import Platform to check for web
+import Layout from '../layout';
 
 export default function Page1() {
   const [image, setImage] = useState<string | null>(null);
@@ -59,25 +60,46 @@ export default function Page1() {
     }
   
     try {
-      const response = await axios.post('http://192.168.106.18:5000/market_prediction/upload', formData, {
+      const response = await axios.post('http://192.168.106.18:5000/vehicle_classification/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Axios will handle this automatically, but it's okay to keep it
         },
       });
   
-      setUploadMessage('Image uploaded successfully!');
-      console.log('Server response:', response.data);
+      // Check the vehicle type and display the corresponding message
+      let message = 'Image uploaded successfully!';
+  
+      switch (response.data.vehicle_type) {
+        case 'Toyota_Tundra':
+          message += ' and vehicle type is Toyota Highlander';
+          break;
+        case 'Toyota_Highlander':
+          message += ' and vehicle type is Toyota Tundra';
+          break;
+        case 'Toyota_Tacoma':
+          message += ' and vehicle type is Toyota Prius';
+          break;
+        case 'Toyota_Prius':
+          message += ' and vehicle type is Toyota Tacoma';
+          break;
+        default:
+          message = 'Image uploaded successfully, but unknown vehicle type.';
+      }
+      setUploadMessage(message);
+      console.log(message);
     } catch (error) {
       console.error('Error uploading image:', error);
       setUploadMessage('Error uploading image');
     }
   };
   
+  
 
   return (
+    <Layout>
     <View style={[styles.container, { padding: 20, justifyContent: 'center', alignItems: 'center' }]}>
       <Text style={[styles.title, { fontSize: 24, marginBottom: 30, textAlign: 'center', color: '#333' }]}>
-        Damage Detection
+        market prediction
       </Text>
 
       {/* Button to pick image from gallery */}
@@ -98,5 +120,5 @@ export default function Page1() {
       {/* Display the upload message */}
       {uploadMessage && <Text>{uploadMessage}</Text>}
     </View>
-  );
+    </Layout>);
 }

@@ -1,13 +1,18 @@
+const { PythonShell } = require("python-shell");
+const path = require("path");
 const express = require("express");
 const multer = require("multer");
 const cors = require("cors");
-const path = require("path");
 const fs = require("fs");
 
 const app = express();
 
 app.use(cors());
 app.use(express.json()); // To handle raw JSON bodies
+
+const options = {
+  pythonPath: path.join(__dirname, 'venv', 'Scripts', 'python'),
+};
 
 // Configure Multer to handle file uploads
 const storage = multer.diskStorage({
@@ -18,7 +23,7 @@ const storage = multer.diskStorage({
     } else if (req.originalUrl.includes("tire_quality")) {
       cb(null, "uploads/tires"); // Save to uploads/tires
     } else if (req.originalUrl.includes("market_prediction")) {
-      cb(null, "uploads/cars"); // Save to uploads/tires
+      cb(null, "uploads/cars"); // Save to uploads/cars
     } else {
       cb(new Error("Invalid route"));
     }
@@ -30,20 +35,32 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage, limits: { fileSize: 10 * 1024 * 1024 } }); // 10 MB file size limit
 
-//******************************************************* */ 1. Route for /damage_detection/upload to save images in /uploads/damages
+// Route for /damage_detection/upload to save images in /uploads/damages
 app.post("/damage_detection/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded");
   }
 
-  // Send response with the path of the uploaded file
-  res.json({
-    message: "File uploaded successfully!",
-    filePath: `http://localhost:5000/uploads/damages/${req.file.filename}`,
+  const imagePath = req.file.path; // Corrected the file path issue
+
+  // Call the Python script to predict repairability
+  PythonShell.run("predict.py", { args: [imagePath], pythonPath: options.pythonPath }, (err, results) => {
+    if (err) {
+      console.error("Error executing Python script:", err);
+      return res.status(500).send("Error processing image.");
+    }
+
+    try {
+      const predictionResults = JSON.parse(results[0]);
+      res.json(predictionResults);
+    } catch (error) {
+      console.error("Error parsing prediction results:", error);
+      res.status(500).send("Error parsing prediction results.");
+    }
   });
 });
 
-//********************************************************* */ 2. Route for /tires/upload to save images in /uploads/tires
+// Route for /tire_quality/upload to save images in /uploads/tires
 app.post("/tire_quality/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded");
@@ -56,7 +73,7 @@ app.post("/tire_quality/upload", upload.single("image"), (req, res) => {
   });
 });
 
-//********************************************************* */ 3. Route for /market_prediction/upload to save images in /uploads/cars
+// Route for /market_prediction/upload to save images in /uploads/cars
 app.post("/market_prediction/upload", upload.single("image"), (req, res) => {
   if (!req.file) {
     return res.status(400).send("No file uploaded");
