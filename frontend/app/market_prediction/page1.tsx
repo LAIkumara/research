@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
 import { Platform } from 'react-native';  // Import Platform to check for web
+import { router } from 'expo-router';
 import Layout from '../layout';
 
 export default function Page1() {
@@ -60,7 +61,7 @@ export default function Page1() {
     }
   
     try {
-      const response = await axios.post('http://192.168.106.18:5000/vehicle_classification/upload', formData, {
+      const response = await axios.post('http://192.168.126.18:5000/vehicle_classification/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data', // Axios will handle this automatically, but it's okay to keep it
         },
@@ -68,19 +69,22 @@ export default function Page1() {
   
       // Check the vehicle type and display the corresponding message
       let message = 'Image uploaded successfully!';
-  
+      router.push({
+                pathname: '/market_prediction/Car_value',
+                params: {vehicle_type: response.data.vehicle_type}
+      });  
       switch (response.data.vehicle_type) {
         case 'Toyota_Tundra':
-          message += ' and vehicle type is Toyota Highlander';
+          message += 'Highlander';
           break;
         case 'Toyota_Highlander':
-          message += ' and vehicle type is Toyota Tundra';
+          message += 'Tundra';
           break;
         case 'Toyota_Tacoma':
-          message += ' and vehicle type is Toyota Prius';
+          message += 'Prius';
           break;
         case 'Toyota_Prius':
-          message += ' and vehicle type is Toyota Tacoma';
+          message += 'Tacoma';
           break;
         default:
           message = 'Image uploaded successfully, but unknown vehicle type.';
