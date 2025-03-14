@@ -1,35 +1,64 @@
 import React from "react";
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient"; // Install with expo install expo-linear-gradient
 
-interface HeaderProps {
-  userName: string;
-  userPhoto: string;
-}
+const Header = () => {
+  const navigation = useNavigation();
+  const route = useRoute();
 
-const Header: React.FC<HeaderProps> = ({ userName, userPhoto }) => {
+  const showBackButton = route.name !== "Dashboard";
+
   return (
-    <View style={styles.header}>
-      <Text style={styles.appName}>My Application</Text>
-      <View style={styles.userInfo}>
-        <Text style={styles.userName}>{userName}</Text>
-        <Image source={{ uri: userPhoto }} style={styles.userPhoto} />
+    <LinearGradient
+      colors={["#00B4DB", "#0083B0"]}
+      style={styles.header}
+    >
+      {showBackButton && (
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
+        </TouchableOpacity>
+      )}
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>AutoXpert</Text>
+        <Text style={styles.slogan}>Smart Solutions for Your Vehicle Needs</Text>
       </View>
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   header: {
+    paddingVertical: 20,
+    paddingHorizontal: 15,
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    padding: 15,
-    backgroundColor: "#007bff",
+    justifyContent: "center",
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    elevation: 4, // Shadow for Android
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
   },
-  appName: { color: "white", fontSize: 20, fontWeight: "bold" },
-  userInfo: { flexDirection: "row", alignItems: "center" },
-  userName: { color: "white", fontSize: 16, marginRight: 10 },
-  userPhoto: { width: 40, height: 40, borderRadius: 20 },
+  backButton: {
+    position: "absolute",
+    left: 15,
+  },
+  textContainer: {
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: "bold",
+    color: "#FFFFFF",
+  },
+  slogan: {
+    fontSize: 14,
+    color: "#E0F7FA",
+  },
 });
 
 export default Header;
