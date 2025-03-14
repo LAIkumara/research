@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import Layout from '../layout';
 
 const HomeScreen = () => {
   const [carType, setCarType] = useState('');
@@ -77,6 +78,7 @@ const HomeScreen = () => {
   };
 
   return (
+    <Layout>
     <View style={styles.container}>
       {(() => {
         let message = '';
@@ -151,6 +153,7 @@ const HomeScreen = () => {
 
       <Button title="Submit" onPress={handleSubmit} />
     </View>
+    </Layout>
   );
 };
 

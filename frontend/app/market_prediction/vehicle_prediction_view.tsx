@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
+import Layout from '../layout';
 
 const ResultScreen = () => {
   const params = useLocalSearchParams();
@@ -11,12 +12,14 @@ const ResultScreen = () => {
   const upperRange = parseInt(totalPrice) + 1000;
 
   return (
+    <Layout>
     <View style={styles.container}>
       <Text style={styles.resultText}>Total Calculated Price Range:</Text>
       <Text style={styles.priceText}>
         {lowerRange} USD - {upperRange} USD
       </Text>
     </View>
+    </Layout>
   );
 };
 

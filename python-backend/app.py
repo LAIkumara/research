@@ -7,6 +7,9 @@ from controllers.vehicle_classification_controller import vehicle_classification
 app = Flask(__name__)
 CORS(app, resources={r'/*': {'origins': '*'}})
 
+@app.route('/')
+def hello():
+    return "Hello, World!"
 
 app.register_blueprint(damage_detection, url_prefix='/damage_detection')
 app.register_blueprint(tire_segmentation, url_prefix='/tire_segmentation')
